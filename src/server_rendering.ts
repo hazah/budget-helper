@@ -68,6 +68,7 @@ export async function renderApp(req: express.Request) {
   </head>
   <body ${helmet.bodyAttributes.toString()}>
     <div id="root">${markup}</div>
+    <div id="modal"></div>
     ${jsScriptTagsFromAssets(assets, "client", " defer crossorigin")}
     ${helmet.script.toString()}
   </body>
