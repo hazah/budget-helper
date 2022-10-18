@@ -39,6 +39,7 @@ export const stores = {
       element: <Stores />,
       loader: storesLoader,
       action: createStore,
+      id: "stores",
     },
     {
       path: "new",

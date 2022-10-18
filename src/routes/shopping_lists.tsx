@@ -49,6 +49,7 @@ export const shopping_lists = {
       element: <ShoppingLists />,
       loader: shoppingListsLoader,
       action: createShoppingList,
+      id: "shopping_lists" ,
     },
     {
       path: "new",

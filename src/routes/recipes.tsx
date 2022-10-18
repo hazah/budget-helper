@@ -37,6 +37,7 @@ export const recipes = {
   children: [
     {
       index: true,
+      id: "recipes",
       element: <Recipes />,
       loader: recipesLoader,
       action: createRecipe,

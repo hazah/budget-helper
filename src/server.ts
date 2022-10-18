@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import express, { Router } from "express";
+import express, { NextFunction, Router } from "express";
 import { v4 as uuid } from "uuid";
 import morgan from "morgan";
 import session from "express-session";
@@ -17,48 +17,52 @@ import {
   notFound,
   serverError,
   passport,
+  loadParam,
 } from "middleware";
 import { render } from "server_rendering";
 
 import routes from "routes";
 
-function createServerRouter(routes: RouteObject[], param?: string) {
+function createServerRouter(routes: RouteObject[]) {
   const router = Router();
 
-  // routes.forEach(options => {
-  //   if (!options.path && !options.index) {
-  //     router.use(createServerRouter(options.children, param));
-  //   } else {
-  //     const endpoint = `/${options.index ? "" : options.path}`;
+  function _createRouter(routes: RouteObject[], prefix: string = null) {
+    routes.forEach(options => {
+      if (!options.path && !options.index) {
+        _createRouter(options.children, prefix);
+      } else {
+        const endpoint = `${prefix ? `${prefix}` : "/"}${
+          options.index
+            ? ""
+            : `${
+                options.path == "/"
+                  ? ""
+                  : `${prefix && prefix !== "/" ? "/" : ""}${options.path}`
+              }`
+        }`;
 
-  //     let currentParam: string = param;
-      
-  //     if (options.path && options.path.startsWith(":")) {
-  //       currentParam = options.path.substring(1);
-  //     }
+        if (options.path && options.path.startsWith(":")) {
+          const param = options.path.substring(1);
 
-  //     if (options.children) {
-  //       router.use(
-  //         endpoint,
-  //         createServerRouter(options.children, currentParam)
-  //       );
-  //     } else {
-  //       if (currentParam) {
-  //         console.debug(endpoint, currentParam)
-  //         router.param(currentParam, (req, res, next, val) => {
-  //           console.debug(val);
-  //         });
-  //       }
-  //       const route = router.route(endpoint);
-  //       route
-  //         .get(renderAppResponse)
-  //         .post(performAppAction)
-  //         .put(performAppAction)
-  //         .patch(performAppAction)
-  //         .delete(performAppAction);
-  //     }
-  //   }
-  // });
+          router.param(param, loadParam(endpoint));
+        }
+
+        if (options.children) {
+          _createRouter(options.children, endpoint);
+        } else {
+          const route = router.route(endpoint);
+          route
+            .get(renderAppResponse)
+            .post(performAppAction)
+            .put(performAppAction)
+            .patch(performAppAction)
+            .delete(performAppAction);
+        }
+      }
+    });
+  }
+
+  _createRouter(routes);
 
   return router;
 }
@@ -105,6 +109,11 @@ const server = express()
   .use(passport.authenticate("session"))
   .use(unauthenticatedRouter)
   .use(authenticatedRouter)
+  .use((req: express.Request, res: express.Response, next: NextFunction) => {
+    res.locals.req = req;
+    res.locals.res = res;
+    next();
+  })
   .use(createServerRouter(routes))
   .use(notFound)
   .use(serverError);

@@ -16,6 +16,7 @@ export const available_products = {
   children: [
     {
       index: true,
+      id: "available_products",
       element: <AvailableProducts />,
       loader: availableProductsLoader,
     },

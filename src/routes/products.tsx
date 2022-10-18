@@ -40,6 +40,7 @@ export const products = {
   children: [
     {
       index: true,
+      id: "products",
       element: <Products />,
       loader: productsLoader,
       action: createProduct,

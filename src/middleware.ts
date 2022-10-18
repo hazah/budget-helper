@@ -3,7 +3,53 @@ import { RouteMatch, matchRoutes, RouteObject, Params } from "react-router-dom";
 import { createFetchRequest } from "renderServer";
 import routes from "routes";
 
+type Data<Type extends Params = Params> = {
+  -readonly [Property in keyof Type]: Type[Property];
+};
+
 export { passport } from "middleware/password";
+
+export function loadParam(endpoint: string) {
+  return async (
+    req: express.Request,
+    res: express.Response,
+    next: NextFunction,
+    value: any,
+    name: string
+  ) => {
+    try {
+      const request = createFetchRequest(req);
+      const matches: RouteMatch[] = matchRoutes(routes, endpoint);
+
+      if (!matches) {
+        return next();
+      }
+
+      const match: RouteMatch = matches[matches.length - 1];
+      const route: RouteObject = match.route;
+      const params: Params = match.params;
+
+      const { loader } = route;
+      let response: Response;
+
+      if (loader) {
+        response = await loader({ request, params });
+      }
+
+      let data: Data;
+
+      if (response) {
+        data = await response.json();
+        const modelName = name.substring(0, name.length - 3);
+        res.locals[modelName] = res.locals[modelName] || {};
+        res.locals[modelName][value] = data;
+      }
+      return next();
+    } catch (err) {
+      next(err);
+    }
+  };
+}
 
 export async function performAppAction(
   req: express.Request,
@@ -28,12 +74,12 @@ export async function performAppAction(
   if (action) {
     res.format({
       html: () => {
-        res.render("app", { req, res });
+        res.render("app");
       },
       json: async () => {
         try {
           const response: Response = await action({ request, params });
-          
+
           if (response.status === 302) {
             const url = `${req.protocol}://${
               req.hostname
@@ -49,28 +95,15 @@ export async function performAppAction(
 
             if (loader) {
               const response: Response = await loader({ request, params });
-              const json = await response.json();
 
               res.status(response.status);
-
-              if (json !== null) {
-                res.json(json);
-              } else {
-                res.end();
-              }
+              res.json(await response.json());
             } else {
-              res.end();
+              next();
             }
           } else {
-            const json = await response.json();
-
+            res.json(await response.json());
             res.status(response.status);
-
-            if (json !== null) {
-              res.json(json);
-            } else {
-              res.end();
-            }
           }
         } catch (err) {
           console.log(err);
@@ -90,7 +123,7 @@ export async function renderAppResponse(
 ) {
   try {
     res.format({
-      html: () => res.render("app", { req, res }),
+      html: () => res.render("app"),
       json: async () => {
         const request = createFetchRequest(req);
         const url = new URL(request.url);
@@ -104,30 +137,25 @@ export async function renderAppResponse(
         const match: RouteMatch = matches[matches.length - 1];
         const route: RouteObject = match.route;
         const params: Params = match.params;
+        const data = {};
+
+        Object.keys(params).forEach(key => {
+          const modelName = key.substring(0, key.length - 3);
+          data[modelName] = res.locals[modelName][params[key]];
+        });
 
         const { loader } = route;
         let response: Response;
 
         if (loader) {
           response = await loader({ request, params });
-        }
-
-        let data: string;
-
-        if (loader) {
-          data = await response.json();
-        }
-
-        if (response) {
-          res.status(response.status);
-
-          if (data !== null) {
-            res.json(data);
-          } else {
-            res.end();
+          if (route.index && route.id) {
+            data[route.id] = await response.json();
           }
+          res.status(response.status);
+          res.json(data);
         } else {
-          res.end();
+          next();
         }
       },
     });
@@ -178,7 +206,7 @@ export function unauthenticated(
 
 export function notFound(req: express.Request, res: express.Response) {
   res.format({
-    html: () => res.render("app", { req, res }),
+    html: () => res.render("app"),
     json: () => {
       res.status(404).json({
         errors: [

@@ -19,10 +19,9 @@ export default function method(callbacks: Callback | Callbacks) {
   }
   return (args: Args) => {
     const { request } = args;
-    const callback: Callback = callbacks[request.method];
 
     if (
-      request.method === "patch" &&
+      request.method === "PATCH" &&
       callbacks["put"] !== undefined &&
       callbacks["patch"] === undefined
     ) {
@@ -30,14 +29,15 @@ export default function method(callbacks: Callback | Callbacks) {
     }
 
     if (
-      request.method === "put" &&
+      request.method === "PUT" &&
       callbacks["patch"] !== undefined &&
       callbacks["put"] === undefined
     ) {
       callbacks["put"] = callbacks["patch"];
     }
 
-    if (!callback) throw new Error("Method ${request.method} not implemented");
+    const callback: Callback = callbacks[request.method.toLocaleLowerCase()];
+    if (!callback) throw new Error(`Method ${request.method} not implemented`);
 
     return callback(args);
   };
