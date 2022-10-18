@@ -5,7 +5,7 @@ import method from "method";
 
 import Recipes from "components/Recipes";
 import Recipe from "components/Recipe";
-import EditRecipe from "components/EditRecipe";
+import EditRecipe from "components/RecipeForm";
 
 function recipesLoader() {
   return json([

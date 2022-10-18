@@ -5,7 +5,7 @@ import method from "method";
 
 import Products from "components/Products";
 import Product from "components/Product";
-import EditProduct from "components/EditProduct";
+import EditProduct from "components/ProductForm";
 
 function productsLoader() {
   return json([

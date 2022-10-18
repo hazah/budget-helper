@@ -5,7 +5,7 @@ import method from "method";
 
 import Store from "components/Store";
 import Stores from "components/Stores";
-import EditStore from "components/EditStore";
+import EditStore from "components/StoreForm";
 
 function storesLoader() {
   return json([
