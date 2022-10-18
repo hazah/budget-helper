@@ -1,11 +1,11 @@
 import React from "react";
-import { json, Outlet, redirect } from "react-router-dom";
+import { json, redirect } from "react-router-dom";
 
 import method from "method";
 
-import ShoppingLists from "ShoppingLists";
-import ShoppingList from "ShoppingList";
-import EditShoppingList from "EditShoppingList";
+import ShoppingLists from "components/ShoppingLists";
+import ShoppingList from "components/ShoppingList";
+import ShoppingListForm from "components/ShoppingListForm";
 
 function shoppingListsLoader() {
   const today = new Date();
@@ -41,36 +41,33 @@ function deleteShoppingList() {
 
 export const shopping_lists = {
   path: "/",
-  element: <Outlet />,
   action: createShoppingList,
   children: [
     {
       index: true,
       element: <ShoppingLists />,
+      id: "shopping_lists",
       loader: shoppingListsLoader,
-      action: createShoppingList,
-      id: "shopping_lists" ,
     },
     {
       path: "new",
-      element: <EditShoppingList />,
+      element: <ShoppingListForm />,
     },
     {
       path: ":shopping_list_id",
-      element: <Outlet />,
+      action: method({
+        put: updateShoppingList,
+        delete: deleteShoppingList,
+      }),
       children: [
         {
           index: true,
           element: <ShoppingList />,
           loader: shoppingListLoader,
-          action: method({
-            put: updateShoppingList,
-            delete: deleteShoppingList,
-          }),
         },
         {
           path: "edit",
-          element: <EditShoppingList />,
+          element: <ShoppingListForm />,
           loader: shoppingListLoader,
         },
       ],

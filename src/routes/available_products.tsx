@@ -1,7 +1,7 @@
 import React from "react";
-import { json, Outlet } from "react-router-dom";
+import { json } from "react-router-dom";
 
-import AvailableProducts from "AvailableProducts";
+import AvailableProducts from "components/AvailableProducts";
 
 function availableProductsLoader() {
   return json([
@@ -12,7 +12,6 @@ function availableProductsLoader() {
 
 export const available_products = {
   path: "available_products",
-  element: <Outlet />,
   children: [
     {
       index: true,

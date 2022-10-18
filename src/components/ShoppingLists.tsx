@@ -1,7 +1,7 @@
 import React from "react";
+import { Link, useLoaderData } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { Link, useLoaderData } from "react-router-dom";
 
 export default function ShoppingLists() {
   const shoppingLists = useLoaderData() as any[];

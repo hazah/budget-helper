@@ -8,7 +8,7 @@ import {
 import { EmotionCache } from "@emotion/react";
 
 import routes from "routes";
-import Server from "Server";
+import Server from "components/Server";
 
 export default async function renderServer(
   cache: EmotionCache,

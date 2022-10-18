@@ -30,20 +30,14 @@ export function loadParam(endpoint: string) {
       const params: Params = match.params;
 
       const { loader } = route;
-      let response: Response;
-
       if (loader) {
-        response = await loader({ request, params });
-      }
-
-      let data: Data;
-
-      if (response) {
-        data = await response.json();
         const modelName = name.substring(0, name.length - 3);
+        
+        const response = await loader({ request, params });
         res.locals[modelName] = res.locals[modelName] || {};
-        res.locals[modelName][value] = data;
+        res.locals[modelName][value] = await response.json();
       }
+
       return next();
     } catch (err) {
       next(err);
@@ -66,7 +60,10 @@ export async function performAppAction(
   }
 
   const match: RouteMatch = matches[matches.length - 1];
-  const route: RouteObject = match.route;
+  const route: RouteObject =
+    match.route.index
+      ? matches[matches.length - 2].route
+      : match.route;
   const params: Params = match.params;
 
   const { action } = route;
@@ -95,9 +92,17 @@ export async function performAppAction(
 
             if (loader) {
               const response: Response = await loader({ request, params });
+              const previousRoutePath = matches[matches.length - 2].route.path;
+              const modelName =
+                route.index && route.id
+                  ? route.id
+                  : previousRoutePath.substring(
+                      1,
+                      previousRoutePath.length - 3
+                    );
 
               res.status(response.status);
-              res.json(await response.json());
+              res.json({ [`${modelName}`]: await response.json() });
             } else {
               next();
             }
@@ -137,7 +142,7 @@ export async function renderAppResponse(
         const match: RouteMatch = matches[matches.length - 1];
         const route: RouteObject = match.route;
         const params: Params = match.params;
-        const data = {};
+        const data: Data = {};
 
         Object.keys(params).forEach(key => {
           const modelName = key.substring(0, key.length - 3);

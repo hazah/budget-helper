@@ -1,11 +1,11 @@
 import React from "react";
-import { json, Outlet, redirect } from "react-router-dom";
+import { json, redirect } from "react-router-dom";
 
 import method from "method";
 
-import Products from "Products";
-import Product from "Product";
-import EditProduct from "EditProduct";
+import Products from "components/Products";
+import Product from "components/Product";
+import EditProduct from "components/EditProduct";
 
 function productsLoader() {
   return json([
@@ -36,14 +36,13 @@ function deleteProduct() {
 
 export const products = {
   path: "products",
-  element: <Outlet />,
+  action: createProduct,
   children: [
     {
       index: true,
       id: "products",
       element: <Products />,
       loader: productsLoader,
-      action: createProduct,
     },
     {
       path: "new",
@@ -51,13 +50,12 @@ export const products = {
     },
     {
       path: ":product_id",
-      element: <Outlet />,
+      action: method({ put: updateProduct, delete: deleteProduct }),
       children: [
         {
           index: true,
           element: <Product />,
           loader: productLoader,
-          action: method({ put: updateProduct, delete: deleteProduct }),
         },
         {
           path: "edit",

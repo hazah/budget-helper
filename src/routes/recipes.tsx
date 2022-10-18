@@ -1,11 +1,11 @@
 import React from "react";
-import { json, Outlet, redirect } from "react-router-dom";
+import { json, redirect } from "react-router-dom";
 
 import method from "method";
 
-import Recipes from "Recipes";
-import Recipe from "Recipe";
-import EditRecipe from "EditRecipe";
+import Recipes from "components/Recipes";
+import Recipe from "components/Recipe";
+import EditRecipe from "components/EditRecipe";
 
 function recipesLoader() {
   return json([
@@ -33,14 +33,13 @@ function deleteRecipe() {
 
 export const recipes = {
   path: "recipes",
-  element: <Outlet />,
+  action: createRecipe,
   children: [
     {
       index: true,
       id: "recipes",
       element: <Recipes />,
       loader: recipesLoader,
-      action: createRecipe,
     },
     {
       path: "new",
@@ -48,13 +47,12 @@ export const recipes = {
     },
     {
       path: ":recipe_id",
-      element: <Outlet />,
+      action: method({ put: updateRecipe, delete: deleteRecipe }),
       children: [
         {
           index: true,
           element: <Recipe />,
           loader: recipeLoader,
-          action: method({ put: updateRecipe, delete: deleteRecipe }),
         },
         {
           path: "edit",

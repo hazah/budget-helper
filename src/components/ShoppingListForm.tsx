@@ -7,16 +7,19 @@ import Button from "@mui/material/Button";
 
 export default function EditShoppingList() {
   const shoppingList = useLoaderData() as any;
-  const date = new Date(shoppingList.date);
+  const date = new Date(shoppingList?.date);
   const dateValue = `${date.getFullYear()}-${String(date.getMonth()).padStart(
     2,
     "0"
   )}-${String(date.getDate()).padStart(2, "0")}`;
 
   return (
-    <Form method="post" action="/">
+    <Form
+      method={shoppingList ? "put" : "post"}
+      action={shoppingList ? `/${shoppingList.id}` : "/"}
+    >
       <Box>
-        <Input type="text" defaultValue={shoppingList.name} />
+        <Input type="text" defaultValue={shoppingList?.name} />
       </Box>
       <Box>
         <Input type="date" defaultValue={dateValue} />

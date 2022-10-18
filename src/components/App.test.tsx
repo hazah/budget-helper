@@ -6,7 +6,7 @@ import App from "./App";
 xtest("renders Home", () => {
   const { getByText } = render(
     <MemoryRouter>
-      <App />
+      {/* <App /> */}
     </MemoryRouter>
   );
   const linkElement = getByText(/Home/i);

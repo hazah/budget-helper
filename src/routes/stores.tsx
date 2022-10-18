@@ -1,11 +1,11 @@
 import React from "react";
-import { json, Outlet, redirect } from "react-router-dom";
+import { json, redirect } from "react-router-dom";
 
 import method from "method";
 
-import Store from "Store";
-import Stores from "Stores";
-import EditStore from "EditStore";
+import Store from "components/Store";
+import Stores from "components/Stores";
+import EditStore from "components/EditStore";
 
 function storesLoader() {
   return json([
@@ -23,7 +23,7 @@ function storeLoader() {
 }
 
 function updateStore({ params }) {
-  return redirect(`/stoers/${params.store_id}`);
+  return redirect(`/stores/${params.store_id}`);
 }
 
 function deleteStore() {
@@ -32,13 +32,12 @@ function deleteStore() {
 
 export const stores = {
   path: "stores",
-  element: <Outlet />,
+  action: createStore,
   children: [
     {
       index: true,
       element: <Stores />,
       loader: storesLoader,
-      action: createStore,
       id: "stores",
     },
     {
@@ -47,13 +46,12 @@ export const stores = {
     },
     {
       path: ":store_id",
-      element: <Outlet />,
+      action: method({ put: updateStore, delete: deleteStore }),
       children: [
         {
           index: true,
           element: <Store />,
           loader: storeLoader,
-          action: method({ put: updateStore, delete: deleteStore }),
         },
         {
           path: "edit",
