@@ -1,29 +1,27 @@
 import React from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+import Box from "@mui/material/Box";
+import MainNavigation from "components/MainNavigation";
+import styled from "@emotion/styled";
+
+import TopAppBar from "components/TopAppBar";
+
+const Container = styled(Box)({
+  minHeight: "100vh",
+});
+
+const Navigation = styled(MainNavigation)({
+  position: "absolute",
+  bottom: 0,
+  minWidth: "100%",
+});
 
 export default function Layout() {
   return (
-    <>
-      <nav>
-        <ul>
-          <li>
-            <Link to="/">Shopping Lists</Link>
-          </li>
-          <li>
-            <Link to="/available_products">Available Products</Link>
-          </li>
-          <li>
-            <Link to="/recipes">Recipes</Link>
-          </li>
-          <li>
-            <Link to="/products">Products</Link>
-          </li>
-          <li>
-            <Link to="/stores">Stores</Link>
-          </li>
-        </ul>
-      </nav>
+    <Container>
+      <TopAppBar context={{}} />
       <Outlet />
-    </>
+      <Navigation />
+    </Container>
   );
 }
