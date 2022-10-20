@@ -6,6 +6,7 @@ import method from "method";
 import Store from "components/Store";
 import Stores from "components/Stores";
 import EditStore from "components/StoreForm";
+import Controller from "controllers/Controller";
 
 function storesLoader() {
   return json([
@@ -30,6 +31,24 @@ function deleteStore() {
   return redirect(`/stores`);
 }
 
+class StoresController extends Controller {
+  public get title(): string {
+    return "Stores";
+  }
+}
+
+class StoreController extends Controller {
+  public get title(): string {
+    return (this.data as { name: string }).name;
+  }
+}
+
+class NewStoreController extends Controller {
+  public get title(): string {
+    return "New Store";
+  }
+}
+
 export const stores = {
   path: "stores",
   action: createStore,
@@ -39,10 +58,12 @@ export const stores = {
       element: <Stores />,
       loader: storesLoader,
       id: "stores",
+      handle: StoresController,
     },
     {
       path: "new",
       element: <EditStore />,
+      handle: NewStoreController,
     },
     {
       path: ":store_id",
@@ -52,11 +73,13 @@ export const stores = {
           index: true,
           element: <Store />,
           loader: storeLoader,
+          handle: StoreController,
         },
         {
           path: "edit",
           element: <EditStore />,
           loader: storeLoader,
+          handle: StoreController,
         },
       ],
     },

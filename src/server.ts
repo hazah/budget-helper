@@ -42,8 +42,6 @@ const server = express()
 // )
 // .use(passport.authenticate("session"))
 // .use(unauthenticatedRouter)
-// .use(authenticatedRouter)
-// .use(notFound)
-// .use(serverError);
+// .use(authenticatedRouter);
 
 export default server;

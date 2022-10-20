@@ -6,6 +6,7 @@ import method from "method";
 import ShoppingLists from "components/ShoppingLists";
 import ShoppingList from "components/ShoppingList";
 import ShoppingListForm from "components/ShoppingListForm";
+import Controller from "controllers/Controller";
 
 function shoppingListsLoader() {
   const today = new Date();
@@ -39,6 +40,18 @@ function deleteShoppingList() {
   return redirect(`/`);
 }
 
+class ShoppingListsController extends Controller {
+  public get title(): string {
+    return "Shopping Lists";
+  }
+}
+
+class ShoppingListController extends Controller {
+  public get title(): string {
+    return (this.data as { name: string }).name;
+  }
+}
+
 export const shopping_lists = {
   path: "/*",
   action: createShoppingList,
@@ -48,6 +61,7 @@ export const shopping_lists = {
       element: <ShoppingLists />,
       id: "shopping_lists",
       loader: shoppingListsLoader,
+      handle: ShoppingListsController,
     },
     {
       path: "new",
@@ -65,11 +79,13 @@ export const shopping_lists = {
           id: "shopping_list",
           element: <ShoppingList />,
           loader: shoppingListLoader,
+          handle: ShoppingListController,
         },
         {
           path: "edit",
           element: <ShoppingListForm />,
           loader: shoppingListLoader,
+          handle: ShoppingListController,
         },
       ],
     },
