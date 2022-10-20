@@ -17,7 +17,7 @@ module.exports = {
     ecmaVersion: "latest",
     sourceType: "module",
   },
-  plugins: ["react", "@typescript-eslint", "prettier"],
+  plugins: ["react", "react-hooks", "@typescript-eslint", "prettier"],
   rules: {
     // indent: ["error", 2, { SwitchCase: 1 }],
     "no-empty-function": "off",
@@ -26,5 +26,6 @@ module.exports = {
     semi: ["error", "always"],
     "allow-parens": "as-needed",
     "prettier/prettier": "error",
+    "react-hooks/exhaustive-deps": "warn",
   },
 };

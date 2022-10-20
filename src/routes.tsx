@@ -7,16 +7,16 @@ import { shopping_lists } from "routes/shopping_lists";
 import { stores } from "routes/stores";
 
 import Layout from "components/Layout";
+import withTitle from "components/withTitle";
+import withNavigationContext from "components/withNavigationContext";
+
+const LayoutWithTitle = withTitle(Layout);
+const LayoutWithTitleAndNavigationContext =
+  withNavigationContext(LayoutWithTitle);
 
 export default [
   {
-    element: <Layout />,
-    children: [
-      shopping_lists,
-      available_products,
-      recipes,
-      products,
-      stores,
-    ],
+    element: <LayoutWithTitleAndNavigationContext />,
+    children: [available_products, recipes, shopping_lists, products, stores],
   },
 ];

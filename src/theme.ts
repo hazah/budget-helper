@@ -4,12 +4,12 @@ const THEME = createTheme({
   components: {
     MuiCssBaseline: {
       styleOverrides: {
-        body: {
-          minHeight: "100vh",
-          "> #root": {
-            minHeight: "100vh",
-          },
-        },
+        // body: {
+        //   minHeight: "100vh",
+        //   "> #root": {
+        //     minHeight: "100vh",
+        //   },
+        // },
       },
     },
   },

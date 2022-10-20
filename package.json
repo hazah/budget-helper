@@ -89,7 +89,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.31.10",
-    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-hooks": "^5.0.0-next-987292815-20221019",
     "html-webpack-plugin": "^4.5.2",
     "jshint": "^2.13.5",
     "mini-css-extract-plugin": "^0.9.0",
