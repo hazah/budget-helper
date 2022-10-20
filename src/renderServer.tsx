@@ -12,10 +12,9 @@ import Server from "components/Server";
 
 export default async function renderServer(
   cache: EmotionCache,
-  req: express.Request
+  request: Request
 ): Promise<[string, StaticHandlerContext]> {
   const { query } = createStaticHandler(routes);
-  const request = createFetchRequest(req);
   const context = await query(request);
 
   if (context instanceof Response) {

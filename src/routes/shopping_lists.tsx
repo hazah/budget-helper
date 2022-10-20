@@ -31,8 +31,8 @@ function shoppingListLoader() {
   return json({ id: 1, name: "shopping list 1", date: today });
 }
 
-function updateShoppingList({ params }) {
-  return redirect(`/${params.shopping_list_id}`);
+function updateShoppingList() {
+  return shoppingListLoader();
 }
 
 function deleteShoppingList() {
@@ -40,7 +40,7 @@ function deleteShoppingList() {
 }
 
 export const shopping_lists = {
-  path: "/",
+  path: "/*",
   action: createShoppingList,
   children: [
     {
@@ -62,6 +62,7 @@ export const shopping_lists = {
       children: [
         {
           index: true,
+          id: "shopping_list",
           element: <ShoppingList />,
           loader: shoppingListLoader,
         },

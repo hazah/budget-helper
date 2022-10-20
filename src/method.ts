@@ -37,7 +37,11 @@ export default function method(callbacks: Callback | Callbacks) {
     }
 
     const callback: Callback = callbacks[request.method.toLocaleLowerCase()];
-    if (!callback) throw new Error(`Method ${request.method} not implemented`);
+    if (!callback)
+      throw new Response(
+        JSON.stringify({ error: `Method ${request.method} Not Allowed` }),
+        { status: 405 }
+      );
 
     return callback(args);
   };
