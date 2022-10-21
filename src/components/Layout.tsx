@@ -5,7 +5,10 @@ import MainNavigation from "components/MainNavigation";
 import styled from "@emotion/styled";
 
 import TopAppBar from "components/TopAppBar";
-import { ControllerConsumer, withController } from "./ControllerProvider";
+import {
+  ControllerConsumer,
+  withController,
+} from "components/ControllerProvider";
 
 const Container = styled(Box)({
   minHeight: "100vh",
@@ -21,10 +24,14 @@ export default withController(function Layout() {
   return (
     <Container>
       <ControllerConsumer>
-        {controller => <TopAppBar title={controller.title} context={{}} />}
+        {controller => (
+          <>
+            <TopAppBar title={controller.title} context={{}} />
+            <Outlet context={controller} />
+            <Navigation />
+          </>
+        )}
       </ControllerConsumer>
-      <Outlet />
-      <Navigation />
     </Container>
   );
 });

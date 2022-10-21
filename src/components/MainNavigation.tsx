@@ -5,13 +5,13 @@ import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import Store from "@mui/icons-material/Store";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import KitchenIcon from "@mui/icons-material/Kitchen";
-import SoupKitchenIcon from '@mui/icons-material/SoupKitchen';
-import BreakfastDiningIcon from '@mui/icons-material/BreakfastDining';
+import SoupKitchenIcon from "@mui/icons-material/SoupKitchen";
+import BreakfastDiningIcon from "@mui/icons-material/BreakfastDining";
 
 const links: Record<string, { label: string; icon: JSX.Element }> = {
-  available_products: { label: "Available", icon: <KitchenIcon /> },
+  inventory: { label: "Inventory", icon: <KitchenIcon /> },
   recipes: { label: "Recipes", icon: <SoupKitchenIcon /> },
-  "/": { label: "Shopping", icon: <ShoppingCartIcon /> },
+  "/": { label: "Trips", icon: <ShoppingCartIcon /> },
   products: { label: "Products", icon: <BreakfastDiningIcon /> },
   stores: { label: "Stores", icon: <Store /> },
 };

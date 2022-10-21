@@ -3,7 +3,7 @@ import express from "express";
 import morgan from "morgan";
 import methodOverride from "method-override";
 
-import { appMiddleware } from "middleware";
+import { application } from "middleware";
 
 // const authenticatedRouter = Router();
 // const unauthenticatedRouter = Router();
@@ -32,7 +32,7 @@ const server = express()
       }
     })
   )
-  .use(appMiddleware);
+  .use(application);
 // .use(
 //   session({
 //     secret: uuid(),

@@ -1,27 +1,38 @@
 import Controller from "controllers/Controller";
-import React, { createContext } from "react";
+import React, {
+  Component,
+  createContext,
+  FunctionComponent,
+  ReactNode,
+  useContext,
+} from "react";
+import { ComponentType } from "react";
 import { useMatches } from "react-router-dom";
 
 const ControllerContext = createContext<Controller>(undefined);
 
-function useController() {
+function useNewController() {
   const matches = useMatches();
   const match = matches.slice(-1).pop();
   const Controller = match.handle as { new (data: unknown): any };
 
   if (!Controller) {
-    throw Error("Controller not implemented");
+    return undefined;
   }
 
   return new Controller(match.data);
 }
 
-export function withController(Component) {
-  return props => {
-    const controller = useController();
+type Props = {
+  children?: ReactNode;
+};
+
+export function withController(WrappedComponent) {
+  return (props: Props) => {
+    const controller = useNewController();
     return (
       <ControllerProvider controller={controller}>
-        <Component {...props} />
+        <WrappedComponent {...props} />
       </ControllerProvider>
     );
   };
@@ -36,9 +47,9 @@ function ControllerProvider({ controller, children }) {
 }
 
 export function ControllerConsumer({ children }) {
-  return (
-    <ControllerContext.Consumer>
-      {children}
-    </ControllerContext.Consumer>
-  );
+  return <ControllerContext.Consumer>{children}</ControllerContext.Consumer>;
+}
+
+export function useController() {
+  return useContext(ControllerContext);
 }

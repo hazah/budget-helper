@@ -5,21 +5,18 @@ import Input from "@mui/material/Input";
 import Box from "@mui/system/Box";
 import Button from "@mui/material/Button";
 
-export default function EditShoppingList() {
-  const shoppingList = useLoaderData() as any;
-  const date = new Date(shoppingList?.date);
+export default function TripForm() {
+  const trip = useLoaderData() as any;
+  const date = new Date(trip?.date);
   const dateValue = `${date.getFullYear()}-${String(date.getMonth()).padStart(
     2,
     "0"
   )}-${String(date.getDate()).padStart(2, "0")}`;
 
   return (
-    <Form
-      method={shoppingList ? "put" : "post"}
-      action={shoppingList ? `/${shoppingList.id}` : "/"}
-    >
+    <Form method={trip ? "put" : "post"} action={trip ? `/${trip.id}` : "/"}>
       <Box>
-        <Input type="text" defaultValue={shoppingList?.name} />
+        <Input type="text" defaultValue={trip?.name} />
       </Box>
       <Box>
         <Input type="date" defaultValue={dateValue} />

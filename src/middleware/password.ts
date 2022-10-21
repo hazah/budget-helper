@@ -34,4 +34,4 @@ passport.deserializeUser((user, done) =>
   process.nextTick(() => done(null, user))
 );
 
-export { passport };
+export { passport as password };
