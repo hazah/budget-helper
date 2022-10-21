@@ -1,6 +1,6 @@
 import React from "react";
 
-import { available_products } from "routes/available_products";
+import { inventory } from "routes/inventory";
 import { products } from "routes/products";
 import { recipes } from "routes/recipes";
 import { shopping_lists } from "routes/shopping_lists";
@@ -11,6 +11,6 @@ import Layout from "components/Layout";
 export default [
   {
     element: <Layout />,
-    children: [available_products, recipes, shopping_lists, products, stores],
+    children: [inventory, recipes, shopping_lists, products, stores],
   },
 ];

@@ -6,7 +6,7 @@ import method from "method";
 import Products from "components/Products";
 import Product from "components/Product";
 import EditProduct from "components/ProductForm";
-import Controller from "controllers/Controller";
+import ProductsController from "controllers/ProductsController";
 
 function productsLoader() {
   return json([
@@ -35,24 +35,6 @@ function deleteProduct() {
   return redirect(`/products`);
 }
 
-class ProductsController extends Controller {
-  public get title(): string {
-    return "Products";
-  }
-}
-
-class ProductController extends Controller {
-  public get title(): string {
-    return (this.data as { name: string }).name;
-  }
-}
-
-class NewProductController extends Controller {
-  public get title(): string {
-    return "New Product";
-  }
-}
-
 export const products = {
   path: "products",
   action: createProduct,
@@ -67,7 +49,7 @@ export const products = {
     {
       path: "new",
       element: <EditProduct />,
-      handl: NewProductController,
+      handl: ProductsController,
     },
     {
       path: ":product_id",
@@ -77,13 +59,13 @@ export const products = {
           index: true,
           element: <Product />,
           loader: productLoader,
-          handle: ProductController,
+          handle: ProductsController,
         },
         {
           path: "edit",
           element: <EditProduct />,
           loader: productLoader,
-          handle: ProductController,
+          handle: ProductsController,
         },
       ],
     },

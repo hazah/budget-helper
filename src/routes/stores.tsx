@@ -37,18 +37,6 @@ class StoresController extends Controller {
   }
 }
 
-class StoreController extends Controller {
-  public get title(): string {
-    return (this.data as { name: string }).name;
-  }
-}
-
-class NewStoreController extends Controller {
-  public get title(): string {
-    return "New Store";
-  }
-}
-
 export const stores = {
   path: "stores",
   action: createStore,
@@ -63,7 +51,7 @@ export const stores = {
     {
       path: "new",
       element: <EditStore />,
-      handle: NewStoreController,
+      handle: StoresController,
     },
     {
       path: ":store_id",
@@ -73,13 +61,13 @@ export const stores = {
           index: true,
           element: <Store />,
           loader: storeLoader,
-          handle: StoreController,
+          handle: StoresController,
         },
         {
           path: "edit",
           element: <EditStore />,
           loader: storeLoader,
-          handle: StoreController,
+          handle: StoresController,
         },
       ],
     },

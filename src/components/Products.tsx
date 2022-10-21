@@ -9,7 +9,7 @@ export default function Products() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-        Recipes
+        Products
       </Typography>
       <ul>
         {products.map(product => (

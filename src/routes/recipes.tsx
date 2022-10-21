@@ -6,7 +6,7 @@ import method from "method";
 import Recipes from "components/Recipes";
 import Recipe from "components/Recipe";
 import EditRecipe from "components/RecipeForm";
-import Controller from "controllers/Controller";
+import RecipesController from "controllers/RecipesController";
 
 function recipesLoader() {
   return json([
@@ -31,24 +31,6 @@ function deleteRecipe() {
   return redirect(`/recipes`);
 }
 
-class RecipesController extends Controller {
-  public get title(): string {
-    return "Recipes";
-  }
-}
-
-class RecipeController extends Controller {
-  public get title(): string {
-    return (this.data as { name: string }).name;
-  }
-}
-
-class NewRecipeController extends Controller {
-  public get title(): string {
-    return "New Recipe";
-  }
-}
-
 export const recipes = {
   path: "recipes",
   action: createRecipe,
@@ -63,7 +45,7 @@ export const recipes = {
     {
       path: "new",
       element: <EditRecipe />,
-      handle: NewRecipeController,
+      handle: RecipesController,
     },
     {
       path: ":recipe_id",
@@ -73,13 +55,13 @@ export const recipes = {
           index: true,
           element: <Recipe />,
           loader: recipeLoader,
-          handle: RecipeController,
+          handle: RecipesController,
         },
         {
           path: "edit",
           element: <EditRecipe />,
           loader: recipeLoader,
-          handle: RecipeController,
+          handle: RecipesController,
         },
       ],
     },

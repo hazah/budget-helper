@@ -42,18 +42,18 @@ const Container = styled(Box)({
   flexGrow: 1,
 });
 
-export default function AvailableProducts() {
-  const availableProducts = useLoaderData() as any[];
+export default function Inventory() {
+  const inventorys = useLoaderData() as any[];
 
   return (
     <Paper elevation={0}>
       <nav>
         <List>
-          {availableProducts.map(availableProduct => (
+          {inventorys.map(inventory => (
             <ListItemLink
-              key={availableProduct.name}
-              to={`/products/${availableProduct.id}`}
-              primary={`${availableProduct.name} - ${availableProduct.units}`}
+              key={inventory.name}
+              to={`/products/${inventory.id}`}
+              primary={`${inventory.name} - ${inventory.units}`}
             />
           ))}
         </List>
