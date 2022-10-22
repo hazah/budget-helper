@@ -26,7 +26,7 @@ export default withController(function Layout() {
       <ControllerConsumer>
         {controller => (
           <>
-            <TopAppBar title={controller.title} context={{}} />
+            <TopAppBar title={controller?.title} context={{}} />
             <Outlet context={controller} />
             <Navigation />
           </>

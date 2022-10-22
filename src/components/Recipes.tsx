@@ -1,19 +1,26 @@
 import React from "react";
-import { useLoaderData, Link } from "react-router-dom";
-import Box from "@mui/material/Box";
+import { useLoaderData } from "react-router-dom";
+
+import ListItemLink from "./ListItemLink";
+import Paper from "@mui/material/Paper";
+import List from "@mui/material/List";
 
 export default function Recipes() {
   const recipes = useLoaderData() as any[];
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <ul>
-        {recipes.map(recipe => (
-          <li key={recipe.name}>
-            <Link to={`/recipes/${recipe.id}`}>{recipe.name}</Link>
-          </li>
-        ))}
-      </ul>
-    </Box>
+    <Paper elevation={0}>
+      <nav>
+        <List>
+          {recipes.map(recipe => (
+            <ListItemLink
+              key={recipe.name}
+              to={`/recipes/${recipe.id}`}
+              primary={`${recipe.name}`}
+            />
+          ))}
+        </List>
+      </nav>
+    </Paper>
   );
 }

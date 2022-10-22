@@ -1,22 +1,26 @@
 import React from "react";
-import { Link, useLoaderData } from "react-router-dom";
-import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
+import { useLoaderData } from "react-router-dom";
+
+import ListItemLink from "./ListItemLink";
+import Paper from "@mui/material/Paper";
+import List from "@mui/material/List";
 
 export default function Trips() {
   const trips = useLoaderData() as any[];
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <ul>
-        {trips.map(trip => (
-          <li key={trip.name}>
-            <Link to={`./${trip.id}`}>
-              {trip.name} - {trip.date}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </Box>
+    <Paper elevation={0}>
+      <nav>
+        <List>
+          {trips.map(trip => (
+            <ListItemLink
+              key={trip.name}
+              to={`./${trip.id}`}
+              primary={`${trip.name} - ${trip.date}`}
+            />
+          ))}
+        </List>
+      </nav>
+    </Paper>
   );
 }

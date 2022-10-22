@@ -1,2 +1,2 @@
 export { application } from "middleware/application"
-export { password } from "middleware/password";
+export { authentication } from "middleware/authentication";

@@ -1,15 +1,8 @@
 import React from "react";
-import { json } from "react-router-dom";
 
 import Inventory from "components/Inventory";
 import InventoryController from "controllers/InventoryController";
-
-function availableProductsLoader() {
-  return json([
-    { id: 1, name: "product 1", units: 2 },
-    { id: 2, name: "product 2", units: 5 },
-  ]);
-}
+import { getInventory } from "api/inventory";
 
 export const inventory = {
   path: "inventory",
@@ -18,7 +11,7 @@ export const inventory = {
       index: true,
       id: "inventory",
       element: <Inventory />,
-      loader: availableProductsLoader,
+      loader: getInventory,
       handle: InventoryController,
     },
   ],

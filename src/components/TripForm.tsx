@@ -16,10 +16,10 @@ export default function TripForm() {
   return (
     <Form method={trip ? "put" : "post"} action={trip ? `/${trip.id}` : "/"}>
       <Box>
-        <Input type="text" defaultValue={trip?.name} />
+        <Input name="name" type="text" defaultValue={trip?.name} />
       </Box>
       <Box>
-        <Input type="date" defaultValue={dateValue} />
+        <Input name="date" type="date" defaultValue={dateValue} />
       </Box>
       <Box>
         <Button type="submit">Save</Button>

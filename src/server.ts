@@ -2,20 +2,11 @@
 import express from "express";
 import morgan from "morgan";
 import methodOverride from "method-override";
+import session from "express-session";
+import passport from "passport";
+import { v4 as uuid } from "uuid";
 
-import { application } from "middleware";
-
-// const authenticatedRouter = Router();
-// const unauthenticatedRouter = Router();
-
-// authenticatedRouter.route("/").all(authenticated).delete(logout);
-
-// unauthenticatedRouter
-//   .route("/")
-//   .all(unauthenticated)
-//   .post(signup, passport.authenticate("local"), login)
-//   .put(passport.authenticate("local"), login)
-//   .patch(passport.authenticate("local"), login);
+import { application, authentication } from "middleware";
 
 const server = express()
   .disable("x-powered-by")
@@ -32,16 +23,14 @@ const server = express()
       }
     })
   )
+  .use(
+    session({
+      secret: uuid(),
+      resave: false,
+      saveUninitialized: false,
+    })
+  )
+  // .post("/login", authentication)
   .use(application);
-// .use(
-//   session({
-//     secret: uuid(),
-//     resave: false,
-//     saveUninitialized: false,
-//   })
-// )
-// .use(passport.authenticate("session"))
-// .use(unauthenticatedRouter)
-// .use(authenticatedRouter);
 
 export default server;

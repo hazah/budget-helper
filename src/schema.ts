@@ -9,11 +9,11 @@ export default [
       store: { belongsTo: "store" },
     },
   },
-  { singular: "shopping_list", plural: "shopping_lists" },
+  { singular: "trip", plural: "trips" },
   { singular: "recipe", plural: "recipes" },
   {
-    singular: "available_product",
-    plural: "available_products",
+    singular: "supply",
+    plural: "supplies",
     relations: {
       price: { belongsTo: "price" },
       store: { belongsTo: "store" },
@@ -23,7 +23,7 @@ export default [
     singular: "shopping_product",
     plural: "shopping_products",
     relations: {
-      shopping_list: { belongsTo: "shopping_list" },
+      shopping_list: { belongsTo: "trip" },
       price: { belongsTo: "price" },
     },
   },

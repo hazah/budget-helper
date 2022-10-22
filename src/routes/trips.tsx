@@ -7,40 +7,13 @@ import Trips from "components/Trips";
 import Trip from "components/Trip";
 import TripForm from "components/TripForm";
 import TripsController from "controllers/TripsController";
-
-function tripsLoader() {
-  console.debug("loading all trips...")
-  const today = new Date();
-  const tomorrow = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDay() + 1
-  );
-
-  return json([
-    { id: 1, name: "shopping list 1", date: today },
-    { id: 2, name: "shopping list 2", date: tomorrow },
-  ]);
-}
-
-function createTrip() {
-  return redirect(`/1`);
-}
-
-function tripLoader() {
-  console.debug("loading a trip...")
-  const today = new Date();
-
-  return json({ id: 1, name: "shopping list 1", date: today });
-}
-
-function updateTrip() {
-  return tripLoader();
-}
-
-function deleteTrip() {
-  return redirect(`/`);
-}
+import {
+  createTrip,
+  getTrips,
+  updateTrip,
+  deleteTrip,
+  getTrip,
+} from "api/trips";
 
 export const trips = {
   path: "/*",
@@ -50,13 +23,13 @@ export const trips = {
       index: true,
       element: <Trips />,
       id: "trips",
-      loader: tripsLoader,
+      loader: getTrips,
       handle: TripsController,
     },
     {
       path: "new",
       element: <TripForm />,
-      handle: TripsController
+      handle: TripsController,
     },
     {
       path: ":trip_id",
@@ -69,13 +42,13 @@ export const trips = {
           index: true,
           id: "trip",
           element: <Trip />,
-          loader: tripLoader,
+          loader: getTrip,
           handle: TripsController,
         },
         {
           path: "edit",
           element: <TripForm />,
-          loader: tripLoader,
+          loader: getTrip,
           handle: TripsController,
         },
       ],
