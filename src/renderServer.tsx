@@ -49,14 +49,40 @@ function createFetchHeaders(
 }
 
 class CustomRequest extends Request {
-  private readonly data: FormData;
-  public constructor(href, init) {
+  private readonly data: BodyInit;
+  public constructor(href: RequestInfo | URL, init: RequestInit) {
     super(href, init);
     this.data = init.body;
   }
 
+  // Because node craps its pants if you call this method
+  // for some ungodly reason
   public async formData(): Promise<FormData> {
-    return this.data;
+    const data = new FormData();
+    const values =
+      typeof this.data === "string" ? JSON.parse(this.data) : this.data;
+
+    Object.keys(values).forEach(key => {
+      data.append(key, values[key]);
+    });
+
+    return data;
+  }
+
+  public async json(): Promise<any> {
+    return typeof this.data === "string" ? JSON.parse(this.data) : this.data;
+  }
+
+  public async text(): Promise<string> {
+    return typeof this.data === "string"
+      ? this.data
+      : JSON.stringify(this.data);
+  }
+
+  public async blob(): Promise<Blob> {
+    return new Blob(
+      typeof this.data === "string" ? [this.data] : [JSON.stringify(this.data)]
+    );
   }
 }
 
@@ -65,27 +91,13 @@ export function createFetchRequest(req: express.Request): Request {
   // Note: This had to take originalUrl into account for presumably vite's proxying
   const url = new URL(req.originalUrl || req.url, origin);
 
-  const controller = new AbortController();
-
-  // req.on("close", () => {
-  //   controller.abort();
-  // });
-
   const init: RequestInit = {
     method: req.method,
     headers: createFetchHeaders(req.headers),
-    signal: controller.signal,
   };
 
-  const data = new FormData();
-
   if (req.method !== "GET" && req.method !== "HEAD") {
-    // console.debug(req.body);
-    Object.keys(req.body).forEach(key => {
-      console.debug(key, req.body[key]);
-      data.append(key, req.body[key]);
-    });
-    init.body = data;
+    init.body = req.body;
   }
 
   return new CustomRequest(url.href, init);
