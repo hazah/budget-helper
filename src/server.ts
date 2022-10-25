@@ -30,7 +30,7 @@ const server = express()
       saveUninitialized: false,
     })
   )
-  // .post("/login", authentication)
+  .use(authentication)
   .use(application);
 
 export default server;

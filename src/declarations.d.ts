@@ -7,7 +7,21 @@ export declare global {
   }
 
   interface Window {
-    data: any;
+    env: {
+      DATABASE_NAME: string;
+      DATABASE_URL: string;
+    };
+  }
+
+  namespace Express {
+    interface User {
+      statusCode: number;
+      data: any;
+    }
+
+    interface Request {
+      markup?: string;
+    }
   }
 
   namespace PouchDB {

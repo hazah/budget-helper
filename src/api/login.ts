@@ -1,6 +1,12 @@
-import { json } from "react-router-dom";
+import remoteLogin from "services/remoteLogin";
 
-export async function createLogin({ request }: { request: Request}) {
-  // console.debug("form:", request.body);
-  return json({ name: "username" });
+export function createLogin({ request }: { request: Request }) {
+  try {
+    return remoteLogin(request);
+  } catch (err) {
+    console.debug("authentication failed: ", err.reason);
+    throw new Response(err.reason, {
+      status: err.status,
+    });
+  }
 }

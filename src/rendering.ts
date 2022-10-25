@@ -1,8 +1,8 @@
-import express from "express";
 import createEmotionServer from "@emotion/server/create-instance";
 import createThemeCache from "createThemeCache";
 import { Helmet } from "react-helmet";
-import renderServer, { createFetchRequest } from "renderServer";
+import renderServer from "renderServer";
+import config from "config";
 
 type Assets = {
   [entrypoint: string]: { js: string[]; css: string[] };
@@ -86,6 +86,7 @@ export function renderDocument({
     <body ${helmet.bodyAttributes.toString()}>
       <div id="root">${markup}</div>
       <div id="modal"></div>
+      <script>window.env = ${JSON.stringify(config)};</script>
       ${scripts}
       ${helmet.script.toString()}
     </body>

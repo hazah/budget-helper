@@ -1,46 +1,41 @@
-import express from "express";
+import express, { NextFunction, Router } from "express";
 import passport from "passport";
+import AuthenticationError from "passport/lib/errors/authenticationerror";
 import { Strategy } from "passport-strategy";
+
 import { createFetchRequest } from "renderServer";
 import { renderApp, renderDocument } from "rendering";
-// import { Strategy } from "passport-local";
-
-// import Database from "remote_database";
-
-// passport.use(
-//   new Strategy(async (username, password, done) => {
-//     try {
-//       const userDatabase = new Database("_users", { skip_setup: true });
-//       const response = await userDatabase.logIn(username, password);
-//       if (response.ok) {
-//         const { name } = response;
-//         done(null, { name });
-//       } else {
-//         done(null, false);
-//       }
-//     } catch (err) {
-//       switch (err.name) {
-//         case "unauthorized":
-//         case "forbidden":
-//         default:
-//           console.error("Login Error:", err);
-//       }
-//       done(err);
-//     }
-//   })
-// );
+import { application } from "middleware/application";
 
 class ReactRouterStrategy extends Strategy {
   public readonly name: string = "react";
   public authenticate(req: express.Request, options?: any): void {
-    const request = createFetchRequest(req);
-    renderApp(request)
-      .then(result => {
-        const { context } = result;
-        // console.debug(context);
-        this.error(new Error("stopping here"));
-      })
-      .catch(this.error);
+    this._implementation(req, options);
+  }
+
+  private async _implementation(
+    req: express.Request,
+    options?: any
+  ): Promise<void> {
+    options = options || {};
+    try {
+      const request = createFetchRequest(req);
+      const result = await renderApp(request);
+      const { context } = result;
+
+      req.markup = renderDocument(result);
+
+      if (context.statusCode !== 201) {
+        this.fail(undefined);
+      } else {
+        this.success({
+          data: context.actionData,
+          statusCode: context.statusCode,
+        });
+      }
+    } catch (err) {
+      this.error(err);
+    }
   }
 }
 
@@ -51,12 +46,39 @@ passport.serializeUser((user, done) =>
 );
 
 passport.deserializeUser((user, done) =>
-  process.nextTick(() => done(null, user))
+  process.nextTick(() => done(null, user as Express.User))
 );
 
-const authentication = [
-  passport.authenticate("session"),
-  passport.authenticate("react"),
-];
+const authentication = Router()
+  .use(passport.authenticate("session"))
+  .get("/login", application)
+  .post(
+    "/login",
+    passport.authenticate("react", { failWithError: true }),
+    (req, res) => {
+      res.status(req.user.statusCode);
+      res.format({
+        html: () => res.send(req.markup),
+        json: () => res.json(req.user.data),
+      });
+    }
+  )
+  .use(
+    (
+      err: Error,
+      req: express.Request,
+      res: express.Response,
+      next: NextFunction
+    ) => {
+      if (err instanceof AuthenticationError) {
+        res.format({
+          html: () => res.send(req.markup),
+          json: () => res.json({ message: err.message }),
+        });
+      } else {
+        next(err);
+      }
+    }
+  );
 
 export { authentication };
