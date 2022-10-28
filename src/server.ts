@@ -5,7 +5,7 @@ import methodOverride from "method-override";
 import session from "express-session";
 import { v4 as uuid } from "uuid";
 
-import { _application } from "middleware";
+import { application } from "middleware";
 
 const server = express()
   .disable("x-powered-by")
@@ -30,6 +30,6 @@ const server = express()
     })
   )
   // .use(authentication)
-  .use(_application);
+  .use(application);
 
 export default server;

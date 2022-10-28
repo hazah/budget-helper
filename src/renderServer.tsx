@@ -14,7 +14,7 @@ import routes from "routes";
 import Server from "components/Server";
 import Document from "components/Document";
 
-export async function _renderDocument(request: Request) {
+export async function renderDocument(request: Request) {
   const { query } = createStaticHandler(routes);
   const context = await query(request);
 
@@ -40,7 +40,7 @@ export async function _renderDocument(request: Request) {
   });
 }
 
-export async function _renderData(request: Request) {
+export async function renderData(request: Request) {
   const { queryRoute } = createStaticHandler(routes);
   const data = await queryRoute(request);
 
