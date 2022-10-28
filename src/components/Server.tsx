@@ -1,4 +1,4 @@
-import React, { StrictMode } from "react";
+import React from "react";
 import { v4 as uuid } from "uuid";
 import {
   unstable_StaticRouterProvider as StaticRouterProvider,
@@ -15,7 +15,7 @@ type ServerProps = {
   context: StaticRouterProviderProps["context"];
 };
 
-export default function Server({ cache, context }: ServerProps) {
+export default function Server({ context, cache }: ServerProps) {
   return (
     <App cache={cache}>
       <StaticRouterProvider

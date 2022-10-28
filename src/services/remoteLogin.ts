@@ -1,6 +1,6 @@
 import { json } from "react-router-dom";
 import userDatabase from "database/userDatabase";
-import createService, { returnJson, throwError } from "services/operations";
+import createService, { returnJson, error } from "services/operations";
 
 type LoginType = { username: string; password: string };
 type UserType = { ok?: boolean; name?: string };
@@ -28,6 +28,6 @@ export default async function remoteLogin(request: Request): Promise<Response> {
       message: "logged in as",
       mapper: name => json({ name }, 201),
     }),
-    throwError: throwError(),
+    error: error(),
   });
 }

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import Store from "@mui/icons-material/Store";
@@ -17,7 +17,14 @@ const links: Record<string, { label: string; icon: JSX.Element }> = {
 };
 
 export default function MainNavigation({ className }: { className?: string }) {
-  const [value, setValue] = useState();
+  const location = useLocation();
+  const [value, setValue] = useState(
+    Object.keys(links).findIndex(value =>
+      location.pathname === "/" || location.pathname.match(/^\/\d/)
+        ? value === "/"
+        : location.pathname.startsWith(`/${value}`)
+    )
+  );
 
   return (
     <BottomNavigation
@@ -32,7 +39,7 @@ export default function MainNavigation({ className }: { className?: string }) {
         <BottomNavigationAction
           key={path}
           label={links[path].label}
-          component={Link}
+          component={NavLink}
           to={path}
           icon={links[path].icon}
         />

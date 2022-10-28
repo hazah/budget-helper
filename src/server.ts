@@ -3,10 +3,9 @@ import express from "express";
 import morgan from "morgan";
 import methodOverride from "method-override";
 import session from "express-session";
-import passport from "passport";
 import { v4 as uuid } from "uuid";
 
-import { application, authentication } from "middleware";
+import { _application } from "middleware";
 
 const server = express()
   .disable("x-powered-by")
@@ -30,7 +29,7 @@ const server = express()
       saveUninitialized: false,
     })
   )
-  .use(authentication)
-  .use(application);
+  // .use(authentication)
+  .use(_application);
 
 export default server;

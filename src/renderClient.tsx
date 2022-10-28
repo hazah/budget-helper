@@ -1,9 +1,10 @@
 import React from "react";
-import { hydrate } from "react-dom";
-import { EmotionCache } from "@emotion/react";
+import { hydrateRoot } from "react-dom/client";
 
 import Client from "components/Client";
-
-export default function renderClient(cache: EmotionCache) {
-  hydrate(<Client cache={cache} />, document.getElementById("root"));
+import createThemeCache from "createThemeCache";
+const cache = createThemeCache();
+  
+export default function renderClient() {
+  return hydrateRoot(document.getElementById("root"), <Client cache={cache} />);
 }

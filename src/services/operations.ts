@@ -10,6 +10,7 @@ import {
   pipe,
   catchError,
   OperatorFunction,
+  throwError,
 } from "rxjs";
 
 type FormDataFunctionType<R> = (formData: FormData) => R;
@@ -61,14 +62,11 @@ export function returnJson<T, V, R>({
     );
 }
 
-export function throwError<T>(): FalseType<T> {
+export function error<T>(): FalseType<T> {
   return (): OperatorFunction<T, T> =>
     pipe(
       tap(error => console.error("got unexpected response: ", error)),
       tap(error => {
-        throw error;
-      }),
-      catchError(error => {
         throw error;
       })
     );
@@ -78,14 +76,14 @@ export function runService<D, T, R>({
   getData,
   performOperation,
   returnJson,
-  throwError,
+  error,
   condition,
   message,
 }: {
   getData: FormDataFunctionType<D>;
   performOperation: AsyncFunctionType<D, T>;
   returnJson: TrueType<T, R>;
-  throwError: FalseType<T>;
+  error: FalseType<T>;
   condition: ConditionType;
   message: string;
 }) {
@@ -93,7 +91,17 @@ export function runService<D, T, R>({
     map(getData),
     tap(values => console.debug(message, values)),
     asyncMap(performOperation),
-    ifElse(condition, returnJson, throwError)
+    ifElse(condition, returnJson, error),
+    catchError(error =>
+      of(error).pipe(
+        tap(error => console.error("service operation failed", error)),
+        tap(error => {
+          throw new Response(error.code, {
+            status: error.status,
+          });
+        })
+      )
+    )
   );
 }
 
@@ -102,7 +110,7 @@ export default function createService<D, T>({
   getData,
   performOperation,
   returnJson,
-  throwError,
+  error,
   condition,
   message,
 }: {
@@ -110,11 +118,11 @@ export default function createService<D, T>({
   getData: FormDataFunctionType<D>;
   performOperation: AsyncFunctionType<D, T>;
   returnJson: TrueType<T, Response>;
-  throwError: FalseType<T>;
+  error: FalseType<T>;
   condition: ConditionType;
   message: string;
 }): Promise<Response> {
-  const observable = new Observable(subscriber => {
+  const service = new Observable(subscriber => {
     subscriber.next(formData);
     subscriber.complete();
   }).pipe(
@@ -122,14 +130,14 @@ export default function createService<D, T>({
       getData: getData,
       performOperation,
       returnJson,
-      throwError,
+      error,
       condition,
       message,
     })
   );
 
   return new Promise((next: (response: Response) => void, error) => {
-    observable.subscribe({
+    service.subscribe({
       next,
       error,
     });

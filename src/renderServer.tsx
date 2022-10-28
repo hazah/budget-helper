@@ -5,10 +5,56 @@ import {
   StaticHandlerContext,
   unstable_createStaticHandler as createStaticHandler,
 } from "@remix-run/router";
+import createEmotionServer from "@emotion/server/create-instance";
+import createThemeCache from "createThemeCache";
+
 import { EmotionCache } from "@emotion/react";
 
 import routes from "routes";
 import Server from "components/Server";
+import Document from "components/Document";
+
+export async function _renderDocument(request: Request) {
+  const { query } = createStaticHandler(routes);
+  const context = await query(request);
+
+  if (context instanceof Response) {
+    throw context;
+  }
+
+  const cache = createThemeCache();
+  const { renderStylesToString } =
+    createEmotionServer(cache);
+
+  const markup = renderToString(<Server cache={cache} context={context} />);
+  
+  const document = renderToString(
+    <Document>{renderStylesToString(markup)}</Document>
+  );
+
+  return new Response(document, {
+    status: request.method === "POST" ? 201 : 200,
+    headers: {
+      "Content-Type": "text/html; charset=utf-8",
+    },
+  });
+}
+
+export async function _renderData(request: Request) {
+  const { queryRoute } = createStaticHandler(routes);
+  const data = await queryRoute(request);
+
+  if (data instanceof Response) {
+    return data;
+  }
+
+  return new Response(JSON.stringify(data), {
+    status: request.method === "POST" ? 201 : 200,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+    },
+  });
+}
 
 export default async function renderServer(
   cache: EmotionCache,
