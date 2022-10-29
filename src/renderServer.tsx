@@ -93,23 +93,6 @@ export async function renderData(request: Request) {
   });
 }
 
-export default async function renderServer(
-  cache: EmotionCache,
-  request: Request
-): Promise<[string, StaticHandlerContext]> {
-  //console.debug(request);
-  const { query } = createStaticHandler(routes);
-  const context = await query(request);
-
-  if (context instanceof Response) {
-    throw context;
-  }
-
-  const markup = renderToString(<Server cache={cache} context={context} />);
-
-  return [markup, context];
-}
-
 function createFetchHeaders(
   requestHeaders: express.Request["headers"]
 ): Headers {

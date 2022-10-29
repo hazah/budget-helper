@@ -29,6 +29,7 @@ export type Trip = {
 
 // price information about a product and its quantity found at specific store
 export type Price = {
+  id: string;
   product: Product;
   store: Store;
   amount: number;
@@ -37,6 +38,7 @@ export type Price = {
 
 // product units purchased from a store at a price at a specific date
 export type Supply = {
+  id: string;
   price: Price;
   purchased_at: Date;
   units: number;
@@ -44,6 +46,7 @@ export type Supply = {
 
 // product units at a price sought after on a specific shopping trip
 export type Commodity = {
+  id: string;
   trip: Trip;
   price: Price;
   units: number;
@@ -51,6 +54,7 @@ export type Commodity = {
 
 // the required quantity of a product for a recipe
 export type Ingredient = {
+  id: string;
   recipe: Recipe;
   product: Product;
   quantity: number;

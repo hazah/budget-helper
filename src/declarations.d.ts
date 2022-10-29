@@ -14,6 +14,7 @@ export declare global {
     env: {
       DATABASE_NAME: string;
       DATABASE_URL: string;
+      TEST_MODE: number;
     };
   }
 
