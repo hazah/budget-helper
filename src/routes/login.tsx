@@ -1,8 +1,9 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
 
 import { createLogin } from "api/login";
 import method from "method";
+import Login from "components/Login";
+import LoginController from "controllers/LoginController";
 
 export const login = {
   path: "login",
@@ -11,7 +12,8 @@ export const login = {
   children: [
     {
       index: true,
-      element: <Outlet />,
+      element: <Login />,
+      handle: LoginController,
     },
   ],
 };

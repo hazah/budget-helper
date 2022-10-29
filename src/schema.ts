@@ -1,6 +1,11 @@
 export default [
+  // lookup objects
   { singular: "product", plural: "products" },
   { singular: "store", plural: "stores" },
+  { singular: "trip", plural: "trips" },
+  { singular: "recipe", plural: "recipes" },
+
+  // activity data records
   {
     singular: "price",
     plural: "prices",
@@ -9,27 +14,24 @@ export default [
       store: { belongsTo: "store" },
     },
   },
-  { singular: "trip", plural: "trips" },
-  { singular: "recipe", plural: "recipes" },
   {
     singular: "supply",
     plural: "supplies",
     relations: {
       price: { belongsTo: "price" },
-      store: { belongsTo: "store" },
     },
   },
   {
-    singular: "shopping_product",
-    plural: "shopping_products",
+    singular: "commodity",
+    plural: "commodities",
     relations: {
-      shopping_list: { belongsTo: "trip" },
+      trip: { belongsTo: "trip" },
       price: { belongsTo: "price" },
     },
   },
   {
-    singular: "recipe_product",
-    plural: "recipe_products",
+    singular: "ingredient",
+    plural: "ingredients",
     relations: {
       recipe: { belongsTo: "recipe" },
       product: { belongsTo: "product" },

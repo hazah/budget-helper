@@ -4,7 +4,7 @@ import method from "method";
 
 import Store from "components/Store";
 import Stores from "components/Stores";
-import EditStore from "components/StoreForm";
+import StoreForm from "components/StoreForm";
 import StoresController from "controllers/StoresController";
 import {
   createStore,
@@ -27,7 +27,7 @@ export const stores = {
     },
     {
       path: "new",
-      element: <EditStore />,
+      element: <StoreForm />,
       handle: StoresController,
     },
     {
@@ -42,7 +42,7 @@ export const stores = {
         },
         {
           path: "edit",
-          element: <EditStore />,
+          element: <StoreForm />,
           loader: getStore,
           handle: StoresController,
         },

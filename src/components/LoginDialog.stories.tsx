@@ -1,5 +1,5 @@
 import React from "react";
-import Login from "components/Login";
+import Login from "components/LoginDialog";
 import { ComponentMeta } from "@storybook/react";
 // import { userEvent, waitFor, within } from "@storybook/testing-library";
 

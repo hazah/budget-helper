@@ -4,7 +4,7 @@ import method from "method";
 
 import Products from "components/Products";
 import Product from "components/Product";
-import EditProduct from "components/ProductForm";
+import ProductForm from "components/ProductForm";
 import ProductsController from "controllers/ProductsController";
 import {
   createProduct,
@@ -27,8 +27,8 @@ export const products = {
     },
     {
       path: "new",
-      element: <EditProduct />,
-      handl: ProductsController,
+      element: <ProductForm />,
+      handle: ProductsController,
     },
     {
       path: ":product_id",
@@ -42,7 +42,7 @@ export const products = {
         },
         {
           path: "edit",
-          element: <EditProduct />,
+          element: <ProductForm />,
           loader: getProduct,
           handle: ProductsController,
         },

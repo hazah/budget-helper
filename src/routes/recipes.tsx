@@ -4,7 +4,7 @@ import method from "method";
 
 import Recipes from "components/Recipes";
 import Recipe from "components/Recipe";
-import EditRecipe from "components/RecipeForm";
+import RecipeForm from "components/RecipeForm";
 import RecipesController from "controllers/RecipesController";
 import {
   createRecipe,
@@ -27,7 +27,7 @@ export const recipes = {
     },
     {
       path: "new",
-      element: <EditRecipe />,
+      element: <RecipeForm />,
       handle: RecipesController,
     },
     {
@@ -42,7 +42,7 @@ export const recipes = {
         },
         {
           path: "edit",
-          element: <EditRecipe />,
+          element: <RecipeForm />,
           loader: getRecipe,
           handle: RecipesController,
         },

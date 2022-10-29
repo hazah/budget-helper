@@ -1,10 +1,11 @@
+import { Store } from "models";
 import { json, redirect } from "react-router-dom";
 
 export function getStores() {
   return json([
-    { id: 1, name: "store 1" },
-    { id: 2, name: "store 2" },
-  ]);
+    { id: '1', name: "store 1" },
+    { id: '2', name: "store 2" },
+  ] as Store[]);
 }
 
 export function createStore() {
@@ -12,7 +13,7 @@ export function createStore() {
 }
 
 export function getStore() {
-  return json({ id: 1, name: "store 1" });
+  return json({ id: '1', name: "store 1" } as Store);
 }
 
 export function updateStore({ params }) {
