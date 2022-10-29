@@ -2,38 +2,43 @@ import express, { NextFunction, Router } from "express";
 import passport from "passport";
 import AuthenticationError from "passport/lib/errors/authenticationerror";
 import { Strategy } from "passport-strategy";
-
-import { createFetchRequest } from "renderServer";
-import { renderApp, renderDocument } from "rendering";
+import { createFetchRequest, renderAuth } from "renderServer";
 import { application } from "middleware/application";
 
 class ReactRouterStrategy extends Strategy {
   public readonly name: string = "react";
+
   public authenticate(req: express.Request, options?: any): void {
-    this._implementation(req, options);
+    this.implementation(req, options);
   }
 
-  private async _implementation(
+  private async implementation(
     req: express.Request,
     options?: any
   ): Promise<void> {
     options = options || {};
     try {
-      const request = createFetchRequest(req);
-      const result = await renderApp(request);
-      const { context } = result;
+      const result = await renderAuth(createFetchRequest(req));
 
-      req.markup = renderDocument(result);
+      const { contextOrData, document } = result;
 
-      if (context.statusCode !== 201) {
-        this.fail(undefined);
-      } else {
-        this.success({
-          data: context.actionData,
-          statusCode: context.statusCode,
-        });
+      let data;
+      if ("name" in contextOrData) {
+        data = contextOrData;
+      } else if ("actionData" in contextOrData) {
+        req.markup = document;
+        if (contextOrData.actionData) {
+          data = contextOrData.actionData.user;
+        } else {
+          return this.fail(contextOrData.errors[0]);
+        }
       }
+
+      this.success(data);
     } catch (err) {
+      if (err instanceof Response) {
+        return this.fail(undefined);
+      }
       this.error(err);
     }
   }
@@ -41,26 +46,41 @@ class ReactRouterStrategy extends Strategy {
 
 passport.use(new ReactRouterStrategy());
 
-passport.serializeUser((user, done) =>
-  process.nextTick(() => done(null, user))
-);
+passport.serializeUser((user, done) => {
+  process.nextTick(() => done(null, user));
+});
 
-passport.deserializeUser((user, done) =>
-  process.nextTick(() => done(null, user as Express.User))
-);
+passport.deserializeUser((user, done) => {
+  process.nextTick(() => done(null, user as Express.User));
+});
 
 const authentication = Router()
   .use(passport.authenticate("session"))
-  .get("/login", application)
+  .get(
+    "/login",
+    (req, res, next) => {
+      console.log(req.isAuthenticated());
+      console.log(req.user);
+      if (req.isAuthenticated()) {
+        next("route");
+      } else {
+        next();
+      }
+    },
+    application
+  )
   .post(
     "/login",
     passport.authenticate("react", { failWithError: true }),
-    (req, res) => {
-      res.status(req.user.statusCode);
-      res.format({
-        html: () => res.send(req.markup),
-        json: () => res.json(req.user.data),
-      });
+    (req, res, next) => {
+      try {
+        res.format({
+          html: () => res.send(req.markup),
+          json: () => res.json(req.user),
+        });
+      } catch (err) {
+        next(err);
+      }
     }
   )
   .use(

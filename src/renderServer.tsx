@@ -14,6 +14,44 @@ import routes from "routes";
 import Server from "components/Server";
 import Document from "components/Document";
 
+type User = {
+  name: string;
+};
+
+export async function renderAuth(
+  request: Request
+): Promise<{ contextOrData: User | StaticHandlerContext; document?: string }> {
+  switch (request.headers.get("accept")) {
+    case "application/json":
+      const { queryRoute } = createStaticHandler(routes);
+      const data = await queryRoute(request);
+
+      if (data instanceof Response) {
+        throw data;
+      }
+
+      return { contextOrData: data };
+    default:
+      const { query } = createStaticHandler(routes);
+      const context = await query(request);
+
+      if (context instanceof Response) {
+        throw context;
+      }
+
+      const cache = createThemeCache();
+      const { renderStylesToString } = createEmotionServer(cache);
+
+      const markup = renderToString(<Server cache={cache} context={context} />);
+
+      const document = renderToString(
+        <Document>{renderStylesToString(markup)}</Document>
+      );
+
+      return { contextOrData: context, document: document };
+  }
+}
+
 export async function renderDocument(request: Request) {
   const { query } = createStaticHandler(routes);
   const context = await query(request);
@@ -23,11 +61,10 @@ export async function renderDocument(request: Request) {
   }
 
   const cache = createThemeCache();
-  const { renderStylesToString } =
-    createEmotionServer(cache);
+  const { renderStylesToString } = createEmotionServer(cache);
 
   const markup = renderToString(<Server cache={cache} context={context} />);
-  
+
   const document = renderToString(
     <Document>{renderStylesToString(markup)}</Document>
   );

@@ -19,8 +19,7 @@ export declare global {
 
   namespace Express {
     interface User {
-      statusCode: number;
-      data: any;
+      [key: string]: any;
     }
 
     interface Request {
